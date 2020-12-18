@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using TFinalAlexGonzalezMorales.Models;
+using TFinalAlexGonzalezMorales.Utilities;
 
 namespace TFinalAlexGonzalezMorales.Areas.Identity.Pages.Account
 {
@@ -23,17 +25,20 @@ namespace TFinalAlexGonzalezMorales.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -60,6 +65,12 @@ namespace TFinalAlexGonzalezMorales.Areas.Identity.Pages.Account
             [Display(Name = "Confirmar contraseña")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            public int DNI { get; set; }
+            public string Nombre { get; set; }
+            public int Edad { get; set; }
+            [Display(Name = "Dirección")]
+            public string Direccion { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -74,11 +85,41 @@ namespace TFinalAlexGonzalezMorales.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    DNI = Input.DNI , 
+                    Nombre = Input.Nombre , 
+                    Edad = Input.Edad , 
+                    Direccion = Input.Direccion,
+                    EmailConfirmed = true
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    //Aqui validamos si los roles existen si no se crean 
+                    if (!await _roleManager.RoleExistsAsync(Roles.Secretaria))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(Roles.Secretaria));
+                        await _roleManager.CreateAsync(new IdentityRole(Roles.Profesor));
+                        await _roleManager.CreateAsync(new IdentityRole(Roles.Alumno));
+                    }
+                    //Obtener el rol seleccionado 
+                    string rol = Request.Form["radioRole"].ToString();
+                    //Validamos si el rol seleccionado es Secretaria y si lo es lo agregamos
+                    if (rol == Roles.Secretaria)
+                    {
+                        await _userManager.AddToRoleAsync(user , Roles.Secretaria);
+                    }
+                    else if (rol == Roles.Profesor)
+                    {
+                        await _userManager.AddToRoleAsync(user, Roles.Profesor);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, Roles.Alumno);
+                    }
+                    _logger.LogInformation("Usuario creado con exito.");
 
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

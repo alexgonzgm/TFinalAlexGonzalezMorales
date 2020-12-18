@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TFinalAlexGonzalezMorales.Data;
 
 namespace TFinalAlexGonzalezMorales.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201217093919_AddApplicationUser")]
+    partial class AddApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,10 +84,6 @@ namespace TFinalAlexGonzalezMorales.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -137,8 +135,6 @@ namespace TFinalAlexGonzalezMorales.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -168,10 +164,12 @@ namespace TFinalAlexGonzalezMorales.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -208,10 +206,12 @@ namespace TFinalAlexGonzalezMorales.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -219,206 +219,6 @@ namespace TFinalAlexGonzalezMorales.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAlexGonzalezMorales.Models.Alumno", b =>
-                {
-                    b.Property<string>("DNI")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Direccion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Edad")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("GrupoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("DNI");
-
-                    b.HasIndex("GrupoId");
-
-                    b.ToTable("Alumnos");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAlexGonzalezMorales.Models.AlumnoAsignatura", b =>
-                {
-                    b.Property<int>("AlumnoAsignaturaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AlumnoDNI")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("AsignaturaId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("AsignaturaNula")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Convocatorias")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdAlumno")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdAsignatura")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Nota")
-                        .HasColumnType("int");
-
-                    b.HasKey("AlumnoAsignaturaId");
-
-                    b.HasIndex("AlumnoDNI");
-
-                    b.HasIndex("AsignaturaId");
-
-                    b.ToTable("AlumnosAsignaturas");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAlexGonzalezMorales.Models.Asignatura", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Creditos")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CursoId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaFin")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Obligatoria")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Precio")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProfesorDNI")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CursoId");
-
-                    b.HasIndex("ProfesorDNI");
-
-                    b.ToTable("Asignatura");
-                });
-
-            modelBuilder.Entity("TFinalAlexGonzalezMorales.Models.Curso", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("NombreCurso")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cursos");
-                });
-
-            modelBuilder.Entity("TFinalAlexGonzalezMorales.Models.Grupo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Aula")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Grupos");
-                });
-
-            modelBuilder.Entity("TFinalAlexGonzalezMorales.Models.Matricula", b =>
-                {
-                    b.Property<int>("MatriculaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AlumnoDNI")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AlumnoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AsignaturaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MatriculaId");
-
-                    b.HasIndex("AlumnoDNI");
-
-                    b.HasIndex("AsignaturaId");
-
-                    b.ToTable("Matriculas");
-                });
-
-            modelBuilder.Entity("TFinalAlexGonzalezMorales.Models.Profesor", b =>
-                {
-                    b.Property<string>("DNI")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Departamento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Direccion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Edad")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("DNI");
-
-                    b.ToTable("Profesores");
-                });
-
-            modelBuilder.Entity("TFinalAlexGonzalezMorales.Models.ApplicationUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<int>("DNI")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Direccion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Edad")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -468,48 +268,6 @@ namespace TFinalAlexGonzalezMorales.Data.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ProyectoFinalAlexGonzalezMorales.Models.Alumno", b =>
-                {
-                    b.HasOne("TFinalAlexGonzalezMorales.Models.Grupo", null)
-                        .WithMany("Alumnos")
-                        .HasForeignKey("GrupoId");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAlexGonzalezMorales.Models.AlumnoAsignatura", b =>
-                {
-                    b.HasOne("ProyectoFinalAlexGonzalezMorales.Models.Alumno", "Alumno")
-                        .WithMany()
-                        .HasForeignKey("AlumnoDNI");
-
-                    b.HasOne("ProyectoFinalAlexGonzalezMorales.Models.Asignatura", "Asignatura")
-                        .WithMany()
-                        .HasForeignKey("AsignaturaId");
-                });
-
-            modelBuilder.Entity("ProyectoFinalAlexGonzalezMorales.Models.Asignatura", b =>
-                {
-                    b.HasOne("TFinalAlexGonzalezMorales.Models.Curso", "Curso")
-                        .WithMany()
-                        .HasForeignKey("CursoId");
-
-                    b.HasOne("TFinalAlexGonzalezMorales.Models.Profesor", "Profesor")
-                        .WithMany("Asignaturas")
-                        .HasForeignKey("ProfesorDNI");
-                });
-
-            modelBuilder.Entity("TFinalAlexGonzalezMorales.Models.Matricula", b =>
-                {
-                    b.HasOne("ProyectoFinalAlexGonzalezMorales.Models.Alumno", "Alumno")
-                        .WithMany()
-                        .HasForeignKey("AlumnoDNI");
-
-                    b.HasOne("ProyectoFinalAlexGonzalezMorales.Models.Asignatura", "Asignatura")
-                        .WithMany()
-                        .HasForeignKey("AsignaturaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

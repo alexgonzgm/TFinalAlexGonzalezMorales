@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using TFinalAlexGonzalezMorales.Models;
 
 namespace ProyectoFinalAlexGonzalezMorales.Models
 {
-    public class Alumno
+    public class Alumno 
     {
         [Key]
         public string DNI { get; set; }

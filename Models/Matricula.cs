@@ -8,7 +8,7 @@ namespace TFinalAlexGonzalezMorales.Models
 {
     public class Matricula
     {
-        public int IdMatricula { get; set; }
+        public int MatriculaId { get; set; }
         public int AlumnoId { get; set; }
         public Alumno Alumno { get; set; }
         public int AsignaturaId { get; set; }

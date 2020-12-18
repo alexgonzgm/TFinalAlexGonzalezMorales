@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using ProyectoFinalAlexGonzalezMorales.Models;
+using TFinalAlexGonzalezMorales.Utilities;
+using TFinalAlexGonzalezMorales.Data.Inicializador;
 
 namespace TFinalAlexGonzalezMorales
 {
@@ -32,15 +34,18 @@ namespace TFinalAlexGonzalezMorales
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+           
             services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddScoped<IInicializadorDb, InicializadorDb>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env , IInicializadorDb dbIniciar)
         {
             if (env.IsDevelopment())
             {
@@ -57,6 +62,7 @@ namespace TFinalAlexGonzalezMorales
             app.UseStaticFiles();
 
             app.UseRouting();
+            dbIniciar.Inicializar();
 
             app.UseAuthentication();
             app.UseAuthorization();
