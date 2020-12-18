@@ -17,6 +17,7 @@ namespace TFinalAlexGonzalezMorales.Data.Inicializador
 
         public InicializadorDb(ApplicationDbContext db , UserManager<IdentityUser> userManager , RoleManager<IdentityRole> roleManager)
         {
+           
             _db = db;
             _userManager = userManager;
             _roleManager = roleManager; 
@@ -41,7 +42,7 @@ namespace TFinalAlexGonzalezMorales.Data.Inicializador
             _roleManager.CreateAsync(new IdentityRole(Roles.Profesor)).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole(Roles.Alumno)).GetAwaiter().GetResult();
 
-            _userManager.CreateAsync(new IdentityUser()
+            _userManager.CreateAsync(new ApplicationUser()
             {
                 UserName = "secretaria@gmail.com",
                 Email = "secretaria@gmail.com",
@@ -50,7 +51,7 @@ namespace TFinalAlexGonzalezMorales.Data.Inicializador
                 
                
             },"Secre1$").GetAwaiter().GetResult();
-            IdentityUser usuario = _db.Users
+            ApplicationUser usuario = _db.ApplicationUser
                 .Where(us => us.Email == "secretaria@gmail.com")
                 .FirstOrDefault();
             _userManager.AddToRoleAsync(usuario, Roles.Secretaria).GetAwaiter().GetResult();

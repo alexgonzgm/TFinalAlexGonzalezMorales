@@ -1,9 +1,40 @@
-﻿
+﻿@model List<Profesor>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-<a  asp-area="Identity" asp-page="/Account/Register">Crear un nuevo profesor</a>
+<h1>Area de Profesores</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>nombre</td>
+            <td>Dni</td>
+            <td>Direccion</td>
+            <td>Edad</td>
+            <td>Email</td>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Nombre</td>
+            <td>@item.DNI</td>
+
+            <td>@item.Direccion</td>
+            <td>@item.Edad</td>
+
+            <td>@item.Email</td>
+
+        </tr>
+        }
+    </tbody>
+   
+
+</table>
+<a  asp-area="Secretaria" asp-controller="Profesores"
+   asp-action="AddProfesor">Crear un nuevo profesor</a>
 

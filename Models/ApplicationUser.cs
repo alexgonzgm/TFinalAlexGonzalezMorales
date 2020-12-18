@@ -9,6 +9,10 @@ namespace TFinalAlexGonzalezMorales.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        public ApplicationUser():base()
+        {
+
+        }
         public int DNI { get; set; }
         public string Nombre   { get; set; }
         public int Edad { get; set; }
